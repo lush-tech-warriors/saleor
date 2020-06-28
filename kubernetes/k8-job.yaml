@@ -9,5 +9,18 @@ spec:
       - name: customisation-digital-job
         image: gcr.io/customisation-digital-staging/customisation-digital
         command: ["./init.sh"]
+        env:
+            - name: ALLOWED_CLIENT_HOSTS
+              value: '35.189.68.132,34.105.177.186'
+            - name: GS_STORAGE_BUCKET_NAME
+              value: customisation-digital-staging
+            - name: GS_MEDIA_BUCKET_NAME
+              value: customisation-digital-staging-media
+            - name: DATABASE_URL
+              value: 'postgres://user:FMtGcwoBMDEKf3LN@10.125.64.3:5432/customisation-digital'
+            - name: ALLOWED_HOSTS
+              value: '35.189.68.132,34.105.177.186'
+            - name: SECRET_KEY
+              value: DK8pX1O4bbzbFzzwbo8YEA9lsmyfUDCFKOASvAK50ZKLy8BKRe
       restartPolicy: Never
   backoffLimit: 4
