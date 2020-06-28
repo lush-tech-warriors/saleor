@@ -43,9 +43,11 @@ RUN SECRET_KEY=dummy STATIC_URL=${STATIC_URL} python3 manage.py collectstatic --
 RUN mkdir -p /app/media /app/static \
   && chown -R saleor:saleor /app/
 
-EXPOSE 8000
-ENV PORT 8000
+RUN python3 manage.py collectstatic --noinput
+
+EXPOSE 80
+ENV PORT 80
 ENV PYTHONUNBUFFERED 1
 ENV PROCESSES 4
 
-CMD ["uwsgi", "--ini", "/app/saleor/wsgi/uwsgi.ini"]
+CMD ["./start.sh"]

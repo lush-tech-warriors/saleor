@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: customisation-digital-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: customisation-digital-job
+        image: gcr.io/customisation-digital-staging/customisation-digital
+        command: ["./init.sh"]
+      restartPolicy: Never
+  backoffLimit: 4

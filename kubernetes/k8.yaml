@@ -1,0 +1,97 @@
+# Copyright 2015 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
+
+# This file configures the customisation-digital application . The frontend serves
+# public web traffic.
+
+# The bookshelf frontend replication controller ensures that at least 3
+# instances of the bookshelf app are running on the cluster.
+# For more info about Pods see:
+#   https://cloud.google.com/container-engine/docs/pods/
+# For more info about Deployments:
+#   https://kubernetes.io/docs/user-guide/deployments/
+
+# [START kubernetes_deployment]
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: customisation-digital
+  labels:
+    app: customisation-digital
+spec:
+  selector:
+    matchLabels:
+      app: customisation-digital
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: customisation-digital
+    spec:
+      containers:
+      - name: customisation-digital-app
+        # Replace  with your project ID or use `make template`
+        image: gcr.io/customisation-digital-staging/customisation-digital
+        # This setting makes nodes pull the docker image every time before
+        # starting the pod. This is useful when debugging, but should be turned
+        # off in production.
+        command: ["./start.sh"]
+        imagePullPolicy: Always
+        env:
+            - name: ALLOWED_CLIENT_HOSTS
+              value: '35.189.68.132,34.105.177.186'
+            - name: GS_STORAGE_BUCKET_NAME
+              value: customisation-digital-staging
+            - name: GS_MEDIA_BUCKET_NAME
+              value: customisation-digital-staging-media
+            - name: DATABASE_URL
+              value: 'postgres://user:FMtGcwoBMDEKf3LN@10.125.64.3:5432/customisation-digital'
+            - name: ALLOWED_HOSTS
+              value: '35.189.68.132,34.105.177.186'
+            - name: SECRET_KEY
+              value: DK8pX1O4bbzbFzzwbo8YEA9lsmyfUDCFKOASvAK50ZKLy8BKRe
+        ports:
+        - containerPort: 80
+      volumes:
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+      # [END volumes]
+# [END kubernetes_deployment]
+
+---
+
+# [START service]
+# The customisation-digital service provides a load-balancing proxy over the customisation-digital app
+# pods. By specifying the type as a 'LoadBalancer', Container Engine will
+# create an external HTTP load balancer.
+# For more information about Services see:
+#   https://cloud.google.com/container-engine/docs/services/
+# For more information about external HTTP load balancing see:
+#   https://cloud.google.com/container-engine/docs/load-balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: customisation-digital
+  labels:
+    app: customisation-digital
+spec:
+  type: LoadBalancer
+  loadBalancerIP: "35.189.68.132"
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: customisation-digital
+# [END service]

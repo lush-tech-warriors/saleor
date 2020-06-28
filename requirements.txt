@@ -38,6 +38,7 @@ django-versatileimagefield==2.0
 docutils==0.15.2
 draftjs-sanitizer==1.0.0
 enmerkar==0.7.1
+enum34==1.1.10
 faker==4.0.3
 freezegun==0.3.15
 google-api-core==1.17.0
