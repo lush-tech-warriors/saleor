@@ -44,13 +44,11 @@ steps:
         fi
     id: Save configs
     entrypoint: sh
-  - name: gcr.io/cloud-builders/gke-deploy
-    args:
-      - delete
-      - 'job/customisation-digital-job'
-      - '--cluster=$_GKE_CLUSTER'
-      - '--location=$_GKE_LOCATION'
-      - '--namespace=$_K8S_NAMESPACE'
+  - name: 'gcr.io/cloud-builders/kubectl'
+    args: ['delete', 'job/customisation-digital-job']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=$_GKE_LOCATION'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=$_GKE_CLUSTER'
     id: Clean job
   - name: gcr.io/cloud-builders/gke-deploy
     args:
