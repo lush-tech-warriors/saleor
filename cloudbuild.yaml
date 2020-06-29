@@ -46,7 +46,8 @@ steps:
     entrypoint: sh
   - name: gcr.io/cloud-builders/gke-deploy
     args:
-      - delete job/customisation-digital-job
+      - delete
+      - 'job/customisation-digital-job'
       - '--cluster=$_GKE_CLUSTER'
       - '--location=$_GKE_LOCATION'
       - '--namespace=$_K8S_NAMESPACE'
